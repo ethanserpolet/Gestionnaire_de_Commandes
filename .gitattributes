@@ -1,0 +1,9 @@
+# Fins de ligne LF partout (serveur Linux), quel que soit le poste de développement.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary

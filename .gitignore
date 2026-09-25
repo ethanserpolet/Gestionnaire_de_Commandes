@@ -1,0 +1,15 @@
+# Secrets : identifiants de la base et secret client Entra
+.env
+.env.*
+!.env.example
+
+# Pièces jointes déposées par les utilisateurs
+storage/uploads/
+
+# Fichiers système et éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.log

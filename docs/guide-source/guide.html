@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Commandes St Marc — Guide d’utilisation et présentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<style>
+@page {
+  size: A4;
+  margin: 14mm 15mm 15mm;
+  @bottom-left { content: "Commandes St Marc · Guide d’utilisation"; font: 500 8pt Inter, sans-serif; color: #8591a5; }
+  @bottom-right { content: "Page " counter(page) " / " counter(pages); font: 600 8pt Inter, sans-serif; color: #8591a5; }
+}
+@page cover { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+
+:root {
+  --ink: #0f172a; --ink-2: #3f4a5e; --ink-3: #7b869a;
+  --line: #e3e7f0; --soft: #f5f7fc;
+  --primary: #5b5bf0; --primary-2: #8b5cf6; --primary-soft: #eef0ff; --primary-text: #4338ca;
+  --success: #15803d; --success-soft: #e7f7ee;
+  --warning: #b45309; --warning-soft: #fdf3e4;
+  --danger: #b91c1c; --danger-soft: #fdecec;
+  --info: #1d4ed8; --info-soft: #e8f0fe;
+  --teal: #0f766e; --teal-soft: #e4f6f4;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: Inter, 'Segoe UI', sans-serif; font-size: 10.5pt; line-height: 1.5; color: var(--ink); }
+h1, h2, h3, h4, p { margin: 0; }
+strong { font-weight: 700; }
+
+/* ---------- Couverture ---------- */
+.cover {
+  page: cover;
+  height: 297mm; width: 210mm;
+  position: relative; overflow: hidden;
+  padding: 26mm 20mm 20mm;
+  color: #fff;
+  background: radial-gradient(120% 90% at 100% 0%, #8b5cf6 0%, transparent 55%),
+              radial-gradient(90% 70% at 0% 100%, #0ea5e9 0%, transparent 55%),
+              linear-gradient(160deg, #3730a3 0%, #4f46e5 45%, #6d28d9 100%);
+  display: flex; flex-direction: column;
+}
+.cover-brand { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 13pt; }
+.cover-logo { width: 52px; height: 52px; border-radius: 16px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); display: grid; place-items: center; }
+.cover-brand small { display: block; font-weight: 500; font-size: 10pt; opacity: .8; }
+.cover-kicker { margin-top: 30mm; font-size: 11pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.cover h1 { margin-top: 5mm; font-size: 40pt; line-height: 1.05; font-weight: 900; letter-spacing: -.03em; }
+.cover-sub { margin-top: 7mm; font-size: 15pt; line-height: 1.45; max-width: 150mm; opacity: .92; }
+.cover-shot { margin-top: 14mm; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 70px -20px rgba(15,10,60,.65); border: 1px solid rgba(255,255,255,.4); transform: rotate(-1.2deg); }
+.cover-shot img { display: block; width: 100%; }
+.cover-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; font-size: 10.5pt; }
+.cover-foot strong { display: block; font-size: 12pt; }
+.cover-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8mm; }
+.cover-pills span { padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); font-size: 10pt; font-weight: 600; }
+
+/* ---------- Structure ---------- */
+.chapter { break-before: page; }
+.chapter-head { display: flex; align-items: center; gap: 16px; margin-bottom: 5mm; padding-bottom: 4mm; border-bottom: 2px solid var(--line); }
+.chapter-num { width: 52px; height: 52px; flex-shrink: 0; border-radius: 18px; display: grid; place-items: center; color: #fff; font-size: 22pt; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--primary-2)); }
+.chapter-kicker { font-size: 9.5pt; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--primary-text); }
+.chapter-head h1 { font-size: 21pt; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+h2 { font-size: 14pt; font-weight: 800; letter-spacing: -.01em; margin: 5mm 0 2mm; }
+h3 { font-size: 11.5pt; font-weight: 700; margin: 3.5mm 0 1.5mm; }
+p + p { margin-top: 2mm; }
+.lead { font-size: 12pt; line-height: 1.5; color: var(--ink-2); }
+.muted { color: var(--ink-3); }
+.small { font-size: 9.5pt; }
+.avoid { break-inside: avoid; }
+
+/* ---------- Captures ---------- */
+.shot { position: relative; margin: 3mm 0 2mm; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 16px 40px -18px rgba(15,23,42,.35); break-inside: avoid; }
+.shot img { display: block; width: 100%; }
+.shot.narrow { width: 62%; margin-left: auto; margin-right: auto; }
+.shot.tiny { width: 50%; margin-left: auto; margin-right: auto; }
+.caption { font-size: 9pt; color: var(--ink-3); text-align: center; margin-bottom: 3mm; }
+.co { position: absolute; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #f43f5e; color: #fff; font-weight: 800; font-size: 12pt; border: 3px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+.legend { list-style: none; padding: 0; margin: 2mm 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 7mm; font-size: 10pt; }
+.legend li { display: flex; gap: 10px; align-items: flex-start; }
+.legend .n { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #f43f5e; color: #fff; font-weight: 800; font-size: 10pt; margin-top: 1px; }
+
+/* ---------- Étapes ---------- */
+.steps { list-style: none; padding: 0; margin: 4mm 0; counter-reset: step; }
+.steps > li { position: relative; padding: 0 0 3.5mm 15mm; break-inside: avoid; }
+.steps > li::before {
+  counter-increment: step; content: counter(step);
+  position: absolute; left: 0; top: -2px;
+  width: 38px; height: 38px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: var(--primary-soft); color: var(--primary-text);
+  font-weight: 900; font-size: 15pt;
+}
+.steps > li::after { content: ""; position: absolute; left: 18px; top: 42px; bottom: 2mm; width: 2px; background: var(--line); }
+.steps > li:last-child::after { display: none; }
+.steps h3 { margin: 0 0 .5mm; font-size: 12pt; }
+
+/* ---------- Encadrés ---------- */
+.box { display: flex; gap: 12px; padding: 3mm 4.5mm; border-radius: 12px; margin: 3mm 0; break-inside: avoid; font-size: 10pt; }
+.box .ic { flex-shrink: 0; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 900; color: #fff; }
+.box strong.t { display: block; margin-bottom: .5mm; font-size: 10.5pt; }
+.tip { background: var(--success-soft); } .tip .ic { background: #16a34a; } .tip strong.t { color: var(--success); }
+.warn { background: var(--warning-soft); } .warn .ic { background: #d97706; } .warn strong.t { color: var(--warning); }
+.info { background: var(--info-soft); } .info .ic { background: #2563eb; } .info strong.t { color: var(--info); }
+
+kbd { display: inline-block; min-width: 26px; padding: 1px 8px; border-radius: 7px; border: 1px solid #c9cfdb; border-bottom-width: 3px; background: #fff; font: 700 10.5pt Inter, sans-serif; color: var(--ink); text-align: center; line-height: 1.6; }
+
+/* ---------- Tableaux ---------- */
+table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 2.5mm 0; font-size: 9.8pt; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+th { text-align: left; background: var(--soft); color: var(--ink-3); font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 2.2mm 3.5mm; border-bottom: 1px solid var(--line); }
+td { padding: 2.2mm 3.5mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr { break-inside: avoid; }
+td.c1 { font-weight: 700; width: 30%; }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 11px; border-radius: 999px; font-size: 9.5pt; font-weight: 700; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.p-brouillon { background: #eef1f5; color: #475569; }
+.p-attente { background: var(--warning-soft); color: var(--warning); }
+.p-validation { background: var(--info-soft); color: var(--info); }
+.p-valide { background: var(--success-soft); color: var(--success); }
+.p-finalise { background: var(--teal-soft); color: var(--teal); }
+.p-refuse { background: var(--danger-soft); color: var(--danger); }
+
+/* ---------- Circuit ---------- */
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin: 4mm 0 3mm; break-inside: avoid; }
+.flow-step { position: relative; text-align: center; padding: 0 2mm; }
+.flow-step + .flow-step::before { content: "›"; position: absolute; left: -7px; top: 14px; font-size: 26pt; font-weight: 300; color: #b8bfd0; line-height: 1; }
+.flow-ic { width: 58px; height: 58px; margin: 0 auto 3mm; border-radius: 18px; display: grid; place-items: center; font-size: 22pt; }
+.flow-step strong { display: block; font-size: 11pt; line-height: 1.25; }
+.flow-step span { display: block; margin-top: 1.5mm; font-size: 9pt; color: var(--ink-3); line-height: 1.35; }
+.t-primary { background: var(--primary-soft); } .t-info { background: var(--info-soft); } .t-warning { background: var(--warning-soft); } .t-success { background: var(--success-soft); } .t-teal { background: var(--teal-soft); }
+
+/* ---------- Grilles ---------- */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+.card { border: 1px solid var(--line); border-radius: 14px; padding: 3.5mm 4mm; break-inside: avoid; background: #fff; }
+.card h3 { margin: 0 0 1.5mm; font-size: 12pt; }
+.card p { font-size: 9.8pt; color: var(--ink-2); }
+.card .emoji { font-size: 17pt; line-height: 1; margin-bottom: 1.5mm; }
+.kpi { text-align: center; padding: 4.5mm 4mm; border-radius: 14px; background: var(--soft); }
+.kpi strong { display: block; font-size: 22pt; font-weight: 900; color: var(--primary-text); letter-spacing: -.02em; line-height: 1.1; }
+.kpi span { font-size: 10pt; color: var(--ink-2); }
+
+.role { display: flex; gap: 4mm; align-items: flex-start; }
+.role-ic { flex-shrink: 0; width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; font-size: 17pt; }
+
+.toc { list-style: none; padding: 0; margin: 5mm 0; }
+.toc li { display: flex; align-items: baseline; gap: 4mm; padding: 2.3mm 0; border-bottom: 1px dashed var(--line); font-size: 11.5pt; }
+.toc .num { width: 30px; font-weight: 900; color: var(--primary-text); }
+.toc .who { margin-left: auto; font-size: 9.5pt; color: var(--ink-3); }
+
+.faq dt { font-weight: 700; font-size: 11pt; margin-top: 3.5mm; display: flex; gap: 3mm; break-after: avoid; }
+.faq dt::before { content: "?"; flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: var(--primary-soft); color: var(--primary-text); font-weight: 900; font-size: 11pt; }
+.faq dd { margin: 1.5mm 0 0 calc(24px + 3mm); color: var(--ink-2); break-inside: avoid; }
+
+.vs { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 5mm 0; break-inside: avoid; }
+.vs > div { padding: 4mm; }
+.vs .before { background: #fafafa; }
+.vs .after { background: var(--success-soft); }
+.vs h3 { margin: 0 0 3mm; font-size: 12.5pt; }
+.vs ul { margin: 0; padding-left: 5mm; font-size: 10pt; }
+.vs li + li { margin-top: 1mm; }
+
+.memo { border: 2px solid var(--primary); border-radius: 18px; padding: 7mm; }
+.memo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.memo h3 { margin: 0 0 2mm; color: var(--primary-text); }
+.memo ol { margin: 0; padding-left: 5mm; font-size: 10.5pt; }
+.memo ol li + li { margin-top: 1.2mm; }
+.url { display: inline-block; padding: 2mm 5mm; border-radius: 10px; background: var(--primary-soft); color: var(--primary-text); font-weight: 800; font-size: 14pt; letter-spacing: -.01em; }
+.timeline { list-style: none; margin: 4mm 0; padding: 0; }
+.timeline li { display: flex; gap: 4mm; padding: 2.2mm 0; border-bottom: 1px dashed var(--line); break-inside: avoid; }
+.timeline .when { flex-shrink: 0; width: 32mm; font-weight: 800; color: var(--primary-text); }
+</style>
+</head>
+<body>
+
+<!-- ============ COUVERTURE ============ -->
+<section class="cover">
+  <div class="cover-brand">
+    <div class="cover-logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg></div>
+    <div>Commandes St Marc<small>Lycée St Marc · Service informatique</small></div>
+  </div>
+  <div class="cover-kicker">Guide d’utilisation &amp; présentation</div>
+  <h1>Les demandes d’achat passent en ligne</h1>
+  <p class="cover-sub">Créer, valider et suivre les commandes du lycée depuis son ordinateur, avec son compte Microsoft habituel — sans papier, sans formulaire Excel, sans relance.</p>
+  <div class="cover-pills"><span>Pour tout le personnel</span><span>Pas à pas illustré</span><span>Présentation au conseil de direction</span></div>
+  <div class="cover-shot"><img src="shots/dashboard.jpg" alt=""></div>
+  <div class="cover-foot">
+    <div><strong>commandes.st-marc.eu</strong>Accessible avec votre compte @st-marc.eu</div>
+    <div style="text-align:right"><strong>Septembre 2026</strong>Version 1.0</div>
+  </div>
+</section>
+
+<!-- ============ SOMMAIRE ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div><div class="chapter-kicker">Bienvenue</div><h1>Sommaire</h1></div></div>
+  <p class="lead">Ce guide présente la nouvelle application de demandes d’achat du lycée et explique, étape par étape et avec des captures d’écran, comment l’utiliser. Chaque chapitre indique à qui il s’adresse : lisez simplement ceux qui vous concernent.</p>
+
+  <ol class="toc">
+    <li><span class="num">01</span> Pourquoi une nouvelle application ? <span class="who">Tout le monde · Direction</span></li>
+    <li><span class="num">02</span> Le circuit d’une commande en un coup d’œil <span class="who">Tout le monde</span></li>
+    <li><span class="num">03</span> Qui fait quoi ? <span class="who">Tout le monde</span></li>
+    <li><span class="num">04</span> Se connecter pour la première fois <span class="who">Tout le monde</span></li>
+    <li><span class="num">05</span> Découvrir l’écran d’accueil <span class="who">Tout le monde</span></li>
+    <li><span class="num">06</span> Faire une demande d’achat <span class="who">Demandeurs</span></li>
+    <li><span class="num">07</span> Suivre sa commande, e-mails et PDF <span class="who">Demandeurs</span></li>
+    <li><span class="num">08</span> Valider ou refuser une commande <span class="who">Responsables · Comptabilité · Direction</span></li>
+    <li><span class="num">09</span> Finaliser et consulter les commandes <span class="who">Exécuteurs · Lecteurs</span></li>
+    <li><span class="num">10</span> Questions fréquentes <span class="who">Tout le monde</span></li>
+    <li><span class="num">11</span> Sécurité, déploiement et assistance <span class="who">Direction</span></li>
+    <li><span class="num">12</span> Aide-mémoire à imprimer <span class="who">Tout le monde</span></li>
+  </ol>
+
+  <h2>En résumé</h2>
+  <div class="grid3">
+    <div class="kpi"><strong>0 papier</strong><span>La demande, les signatures et le suivi sont entièrement en ligne</span></div>
+    <div class="kpi"><strong>1 compte</strong><span>Votre compte Microsoft du lycée, rien de nouveau à retenir</span></div>
+    <div class="kpi"><strong>100 % suivi</strong><span>Chacun sait à tout moment où en est une commande</span></div>
+  </div>
+  <div class="box info avoid"><div class="ic">i</div><div><strong class="t">À propos des captures d’écran</strong>Les noms et montants visibles dans les illustrations sont des exemples. Selon votre rôle, certains menus n’apparaissent pas chez vous : c’est normal.</div></div>
+</section>
+
+<!-- ============ 01 POURQUOI ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">01</div><div><div class="chapter-kicker">Tout le monde · Direction</div><h1>Pourquoi une nouvelle application ?</h1></div></div>
+  <p class="lead">Jusqu’ici, chaque demande d’achat passait par un formulaire Excel imprimé ou envoyé par e-mail, qu’il fallait faire signer, transmettre, relancer et archiver. La nouvelle application garde exactement le même contenu — articles, fournisseurs, destinations, motifs, prix — mais automatise tout le reste.</p>
+
+  <div class="vs">
+    <div class="before">
+      <h3>Avant : le formulaire Excel</h3>
+      <ul>
+        <li>Fichier à remplir, imprimer ou envoyer par e-mail</li>
+        <li>Signatures à récupérer une par une, en main propre</li>
+        <li>Aucune visibilité : « Où en est ma demande ? »</li>
+        <li>Relances orales ou par e-mail</li>
+        <li>Numéro de commande attribué à la main</li>
+        <li>Devis et captures envoyés à part, parfois égarés</li>
+        <li>Archivage papier, recherche difficile</li>
+      </ul>
+    </div>
+    <div class="after">
+      <h3>Maintenant : Commandes St Marc</h3>
+      <ul>
+        <li>Formulaire en ligne, total calculé automatiquement</li>
+        <li>Signature électronique à chaque étape, horodatée</li>
+        <li>Suivi en temps réel, visible par le demandeur</li>
+        <li>E-mails automatiques à la bonne personne, au bon moment</li>
+        <li>Numéro de commande attribué automatiquement</li>
+        <li>Devis, PDF et captures d’écran joints à chaque article</li>
+        <li>Historique complet, recherche et tri, PDF en un clic</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Ce que cela apporte à l’établissement</h2>
+  <div class="grid2">
+    <div class="card"><div class="emoji">⏱️</div><h3>Des délais raccourcis</h3><p>Chaque validateur est prévenu immédiatement par e-mail et valide en un clic, depuis son bureau ou chez lui.</p></div>
+    <div class="card"><div class="emoji">🔎</div><h3>Une traçabilité totale</h3><p>Qui a demandé, qui a validé, quand, avec quel commentaire : tout est enregistré et consultable à tout moment.</p></div>
+    <div class="card"><div class="emoji">💶</div><h3>Un meilleur contrôle budgétaire</h3><p>La comptabilité et le chef d’établissement valident systématiquement chaque commande, après le responsable du service.</p></div>
+    <div class="card"><div class="emoji">🗂️</div><h3>Un archivage simplifié</h3><p>Chaque commande génère un bon de demande d’achat au format PDF, avec toutes les signatures et les pièces jointes.</p></div>
+  </div>
+</section>
+
+<!-- ============ 02 CIRCUIT ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">02</div><div><div class="chapter-kicker">Tout le monde</div><h1>Le circuit d’une commande en un coup d’œil</h1></div></div>
+  <p class="lead">Une commande suit toujours le même chemin. À chaque étape, la personne concernée reçoit un e-mail et le demandeur voit l’avancement en direct.</p>
+
+  <div class="flow">
+    <div class="flow-step"><div class="flow-ic t-primary">✍️</div><strong>1. Le demandeur</strong><span>crée la demande, joint les devis et l’envoie : elle est signée à son nom</span></div>
+    <div class="flow-step"><div class="flow-ic t-info">👤</div><strong>2. Le responsable de service</strong><span>valide en premier les demandes de son équipe</span></div>
+    <div class="flow-step"><div class="flow-ic t-warning">🏛️</div><strong>3. Comptabilité et chef d’établissement</strong><span>valident tous les deux, dans l’ordre qu’ils souhaitent</span></div>
+    <div class="flow-step"><div class="flow-ic t-success">📦</div><strong>4. L’exécuteur</strong><span>passe la commande auprès des fournisseurs</span></div>
+    <div class="flow-step"><div class="flow-ic t-teal">✅</div><strong>5. Terminé</strong><span>la commande est finalisée, le demandeur est prévenu</span></div>
+  </div>
+
+  <div class="box warn"><div class="ic">!</div><div><strong class="t">Un refus arrête la commande</strong>À n’importe quelle étape de validation, une personne peut refuser la commande en indiquant un motif. Le demandeur est alors prévenu par e-mail et peut refaire une nouvelle demande corrigée.</div></div>
+
+  <h2>Les statuts d’une commande</h2>
+  <p>Une étiquette de couleur indique partout où en est chaque commande :</p>
+  <table>
+    <tr><th style="width:26%">Statut</th><th>Ce que cela veut dire</th></tr>
+    <tr><td><span class="pill p-brouillon">Brouillon</span></td><td>La demande est en cours de préparation. Vous seul la voyez et pouvez encore tout modifier.</td></tr>
+    <tr><td><span class="pill p-attente">En attente</span></td><td>La demande est envoyée : elle a reçu son numéro et attend la première validation.</td></tr>
+    <tr><td><span class="pill p-validation">En validation</span></td><td>Au moins une personne a validé ; d’autres validations sont encore attendues.</td></tr>
+    <tr><td><span class="pill p-valide">Validé</span></td><td>Toutes les validations sont obtenues : la commande va être passée auprès des fournisseurs.</td></tr>
+    <tr><td><span class="pill p-finalise">Finalisé</span></td><td>La commande a été passée. C’est terminé.</td></tr>
+    <tr><td><span class="pill p-refuse">Refusé</span></td><td>Un validateur a refusé la commande. Le motif est indiqué sur la commande et dans l’e-mail reçu.</td></tr>
+  </table>
+
+  <div class="box info"><div class="ic">i</div><div><strong class="t">Cas particuliers gérés automatiquement</strong>Si votre service n’a pas de responsable, ou si vous êtes vous-même responsable de votre service, l’étape 2 est sautée et la commande part directement en comptabilité et à la direction.</div></div>
+</section>
+
+<!-- ============ 03 RÔLES ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">03</div><div><div class="chapter-kicker">Tout le monde</div><h1>Qui fait quoi ?</h1></div></div>
+  <p class="lead">Chaque personne reçoit un ou plusieurs rôles, attribués par le service informatique. Le menu de l’application s’adapte automatiquement : vous ne voyez que ce qui vous concerne.</p>
+
+  <table>
+    <tr><th style="width:30%">Rôle</th><th>Ce que vous pouvez faire</th><th style="width:25%">Dans votre menu</th></tr>
+    <tr><td class="c1">✍️ Demandeur</td><td>Créer des demandes d’achat, y joindre des devis ou des captures, les envoyer et suivre leur avancement.</td><td>« Mes commandes » et le bouton « Nouvelle commande »</td></tr>
+    <tr><td class="c1">👤 Responsable de service</td><td>Valider ou refuser en premier les demandes des membres de son service.</td><td>« À valider »</td></tr>
+    <tr><td class="c1">💶 Comptabilité</td><td>Valider ou refuser chaque commande après le responsable de service. Une seule personne de la comptabilité suffit.</td><td>« À valider »</td></tr>
+    <tr><td class="c1">🏛️ Chef d’établissement</td><td>Valider ou refuser chaque commande après le responsable de service.</td><td>« À valider »</td></tr>
+    <tr><td class="c1">📦 Exécuteur</td><td>Passer les commandes validées auprès des fournisseurs, puis les marquer comme finalisées.</td><td>« À finaliser »</td></tr>
+    <tr><td class="c1">👁️ Lecteur</td><td>Consulter les commandes validées et finalisées, les trier et les filtrer, télécharger leur PDF.</td><td>« Commandes validées »</td></tr>
+    <tr><td class="c1">⚙️ Administrateur</td><td>Gérer les utilisateurs et leurs rôles, les services et leurs responsables, les destinations et les fournisseurs.</td><td>« Administration »</td></tr>
+  </table>
+
+  <div class="box tip"><div class="ic">✓</div><div><strong class="t">Une personne peut avoir plusieurs rôles</strong>Par exemple, un responsable de service est souvent aussi demandeur : il voit alors à la fois « Mes commandes » et « À valider ».</div></div>
+
+  <h2>Les services</h2>
+  <p>Chaque membre du personnel est rattaché à un <strong>service</strong> (Administration, Vie scolaire, Sciences, Service informatique…). Chaque service a <strong>un ou plusieurs responsables</strong>. C’est l’un d’eux qui valide en premier les demandes du service ; s’il y en a plusieurs, le demandeur choisit lequel au moment de l’envoi.</p>
+</section>
+
+<!-- ============ 04 CONNEXION ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">04</div><div><div class="chapter-kicker">Tout le monde</div><h1>Se connecter pour la première fois</h1></div></div>
+  <p class="lead">Aucun nouveau mot de passe : vous utilisez le même compte que pour votre messagerie du lycée.</p>
+
+  <ol class="steps">
+    <li><h3>Ouvrez l’application</h3>Dans votre navigateur internet (Edge, Chrome, Firefox…), tapez l’adresse suivante dans la barre du haut, puis appuyez sur <kbd>Entrée</kbd> :<br><span class="url" style="margin-top:2mm">commandes.st-marc.eu</span></li>
+    <li><h3>Cliquez sur « Se connecter avec Microsoft »</h3>C’est le seul bouton de la page.</li>
+    <li><h3>Saisissez vos identifiants du lycée</h3>Votre adresse <strong>prenom.nom@st-marc.eu</strong> et le mot de passe de votre messagerie. Si vous êtes déjà connecté à Outlook ou Teams, cette étape est même sautée.</li>
+  </ol>
+  <div class="shot narrow"><img src="shots/login.jpg" alt="Page de connexion"></div>
+  <p class="caption">La page d’accueil de l’application</p>
+
+  <div class="box tip"><div class="ic">✓</div><div><strong class="t">Astuce : ajoutez l’application à vos favoris</strong>Une fois sur la page, appuyez sur <kbd>Ctrl</kbd> + <kbd>D</kbd> pour l’enregistrer dans vos favoris et la retrouver en un clic.</div></div>
+</section>
+
+<section class="chapter">
+  <h2 style="margin-top:0">À la première connexion : choisissez votre service</h2>
+  <p>La toute première fois, l’application vous demande dans quel service vous travaillez. Cliquez sur votre service, puis sur <strong>Continuer</strong>. Le nom du ou des responsables est indiqué sous chaque service pour vous aider.</p>
+  <div class="shot tiny"><img src="shots/service.jpg" alt="Choix du service"></div>
+  <p class="caption">Le choix du service, à faire une seule fois</p>
+
+  <div class="box info"><div class="ic">i</div><div><strong class="t">Vous vous êtes trompé de service ?</strong>Cliquez à tout moment sur votre nom, en bas à gauche de l’écran, pour changer de service.</div></div>
+  <div class="box warn"><div class="ic">!</div><div><strong class="t">« Aucun rôle ne vous a encore été attribué »</strong>Si ce message apparaît, c’est que le service informatique ne vous a pas encore donné accès. Contactez-le : c’est l’affaire de quelques minutes.</div></div>
+</section>
+
+<!-- ============ 05 ACCUEIL ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">05</div><div><div class="chapter-kicker">Tout le monde</div><h1>Découvrir l’écran d’accueil</h1></div></div>
+  <p class="lead">Le tableau de bord résume tout ce qui vous concerne dès l’ouverture de l’application.</p>
+
+  <div class="shot">
+    <img src="shots/dashboard.jpg" alt="Tableau de bord">
+    <span class="co" style="left:18.6%;top:23.2%">1</span>
+    <span class="co" style="left:81.5%;top:6%">2</span>
+    <span class="co" style="left:21.5%;top:17%">3</span>
+    <span class="co" style="left:58.4%;top:30%">4</span>
+    <span class="co" style="left:96.6%;top:30%">5</span>
+    <span class="co" style="left:19.8%;top:92.5%">6</span>
+  </div>
+  <ol class="legend">
+    <li><span class="n">1</span><span><strong>Le menu</strong> : pour aller d’une page à l’autre. Il ne montre que les pages liées à vos rôles. Une pastille indique le nombre de commandes qui vous attendent.</span></li>
+    <li><span class="n">2</span><span><strong>Nouvelle commande</strong> : pour commencer une demande d’achat (visible pour les demandeurs).</span></li>
+    <li><span class="n">3</span><span><strong>Les compteurs</strong> : vos brouillons, vos commandes en cours, ce qui attend votre validation. Cliquez dessus pour ouvrir la liste.</span></li>
+    <li><span class="n">4</span><span><strong>À traiter</strong> : les commandes qui attendent une action de votre part.</span></li>
+    <li><span class="n">5</span><span><strong>Mes commandes récentes</strong> : vos dernières demandes et leur statut.</span></li>
+    <li><span class="n">6</span><span><strong>Votre nom et votre service</strong> : cliquez pour changer de service. À côté : le mode sombre et la déconnexion.</span></li>
+  </ol>
+  <div class="box tip"><div class="ic">✓</div><div><strong class="t">Sur téléphone ou tablette aussi</strong>L’application s’adapte aux petits écrans : le menu se range derrière le bouton ☰ en haut à gauche.</div></div>
+</section>
+
+<!-- ============ 06 CRÉER ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">06</div><div><div class="chapter-kicker">Demandeurs</div><h1>Faire une demande d’achat</h1></div></div>
+  <p class="lead">Une demande peut contenir plusieurs articles, chez plusieurs fournisseurs différents. Tant qu’elle n’est pas envoyée, elle reste un brouillon que vous pouvez compléter à votre rythme.</p>
+
+  <ol class="steps">
+    <li><h3>Cliquez sur « Nouvelle commande »</h3>Un brouillon est créé instantanément, à la date du jour et à votre nom.</li>
+    <li><h3>Cliquez sur « Ajouter un article »</h3>Une fenêtre s’ouvre avec le formulaire ci-dessous. Remplissez-le, puis cliquez sur <strong>Ajouter l’article</strong>. Recommencez pour chaque article.</li>
+  </ol>
+  <div class="shot" style="width:48%;margin-left:auto;margin-right:auto"><img src="shots/article.jpg" alt="Ajouter un article"></div>
+  <p class="caption">La fenêtre « Ajouter un article »</p>
+
+  <table>
+    <tr><th style="width:26%">Champ</th><th>Comment le remplir</th></tr>
+    <tr><td class="c1">Fournisseur *</td><td>Tapez le nom (Amazon, LDLC…). Des suggestions apparaissent au fil de la frappe ; vous pouvez aussi écrire un fournisseur nouveau.</td></tr>
+    <tr><td class="c1">Destination *</td><td>Choisissez le lieu où sera utilisé l’article : pôle, bâtiment, salle…</td></tr>
+    <tr><td class="c1">Description</td><td>La référence, le modèle, les caractéristiques. Si un devis est joint, vous pouvez simplement écrire « Voir PJ ».</td></tr>
+    <tr><td class="c1">Motif</td><td>Pourquoi cet achat : remplacement, nouvelle acquisition, projet pédagogique…</td></tr>
+    <tr><td class="c1">Quantité et prix unitaire</td><td>Le <strong>prix TTC</strong> se calcule tout seul (quantité × prix unitaire). Vous pouvez le corriger si besoin, par exemple pour ajouter des frais de port.</td></tr>
+    <tr><td class="c1">Pièces jointes</td><td>Devis, bon de commande, photo, capture d’écran de la page du produit… (PDF ou image, 15 Mo maximum par fichier).</td></tr>
+  </table>
+  <p class="small muted">* champs obligatoires</p>
+</section>
+
+<section class="chapter">
+  <h2 style="margin-top:0">Joindre un devis ou une capture d’écran</h2>
+  <p>Trois façons, au choix, dans la zone « Pièces jointes » :</p>
+  <div class="grid3">
+    <div class="card"><div class="emoji">🖱️</div><h3>Parcourir</h3><p>Cliquez dans la zone pour choisir un fichier sur votre ordinateur (un devis enregistré, par exemple).</p></div>
+    <div class="card"><div class="emoji">📂</div><h3>Glisser-déposer</h3><p>Faites glisser un fichier depuis votre dossier ou votre bureau et relâchez-le sur la zone.</p></div>
+    <div class="card"><div class="emoji">📸</div><h3>Coller une capture</h3><p>Idéal pour la page d’un produit sur un site marchand. Voir la méthode ci-dessous.</p></div>
+  </div>
+
+  <div class="box tip" style="margin-top:6mm"><div class="ic">✓</div><div><strong class="t">La méthode la plus rapide : la capture d’écran</strong>
+    <ol style="margin:2mm 0 0;padding-left:5mm">
+      <li>Sur la page du produit (site du fournisseur), appuyez en même temps sur <kbd>⊞ Windows</kbd> + <kbd>Maj</kbd> + <kbd>S</kbd>.</li>
+      <li>L’écran s’assombrit : dessinez un rectangle autour de ce que vous voulez garder (photo, prix, référence).</li>
+      <li>Revenez dans l’application et appuyez sur <kbd>Ctrl</kbd> + <kbd>V</kbd>.</li>
+    </ol>
+    La capture est jointe immédiatement, avec son aperçu. Si la fenêtre « Ajouter un article » n’est pas ouverte, elle s’ouvre toute seule avec la capture déjà jointe.</div></div>
+
+  <h2>Vérifier, puis envoyer</h2>
+  <ol class="steps" style="counter-reset: step 2">
+    <li><h3>Relisez votre demande</h3>Les articles sont regroupés par fournisseur, avec un sous-total pour chacun et le total TTC en bas. Une erreur ? Supprimez l’article avec la corbeille et ajoutez-le de nouveau.</li>
+    <li><h3>Choisissez votre responsable (si demandé)</h3>Si votre service a plusieurs responsables, choisissez dans la liste celui qui validera votre demande. Sinon, il est désigné automatiquement.</li>
+    <li><h3>Cliquez sur « Envoyer pour validation »</h3>Confirmez. La commande reçoit son numéro (par exemple <strong>BC-2026-0023</strong>), elle est signée électroniquement à votre nom, et votre responsable est prévenu par e-mail.</li>
+  </ol>
+</section>
+
+<section class="chapter">
+  <div class="shot">
+    <img src="shots/draft.jpg" alt="Brouillon d’une commande">
+    <span class="co" style="left:26%;top:23%">1</span>
+    <span class="co" style="left:57.5%;top:38.7%">2</span>
+    <span class="co" style="left:53%;top:59%">3</span>
+    <span class="co" style="left:72.5%;top:53%">4</span>
+    <span class="co" style="left:72.5%;top:61.3%">5</span>
+  </div>
+  <ol class="legend">
+    <li><span class="n">1</span><span><strong>L’avancement</strong> : vous êtes à l’étape « Brouillon ».</span></li>
+    <li><span class="n">2</span><span><strong>Ajouter un article</strong> : pour compléter la demande.</span></li>
+    <li><span class="n">3</span><span><strong>Joindre</strong> : pour ajouter un fichier à un article déjà saisi.</span></li>
+    <li><span class="n">4</span><span><strong>Responsable</strong> : à choisir si votre service en a plusieurs.</span></li>
+    <li><span class="n">5</span><span><strong>Envoyer pour validation</strong> : la demande part dans le circuit.</span></li>
+  </ol>
+
+  <div class="box warn"><div class="ic">!</div><div><strong class="t">Après l’envoi, la commande n’est plus modifiable</strong>C’est ce qui garantit que les validateurs approuvent exactement ce que vous avez demandé. Si vous devez changer quelque chose, demandez à un validateur de la refuser avec un motif, puis refaites une nouvelle demande.</div></div>
+  <div class="box info"><div class="ic">i</div><div><strong class="t">Pas le temps de finir ?</strong>Rien n’est perdu : votre brouillon est enregistré au fur et à mesure. Retrouvez-le plus tard dans « Mes commandes ». Un brouillon inutile se supprime avec le bouton « Supprimer le brouillon ».</div></div>
+</section>
+
+<!-- ============ 07 SUIVRE ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">07</div><div><div class="chapter-kicker">Demandeurs</div><h1>Suivre sa commande, e-mails et PDF</h1></div></div>
+  <p class="lead">Plus besoin de demander où en est votre commande : l’application vous le montre, et vous prévient par e-mail à chaque étape importante.</p>
+
+  <h2>Où en est ma commande ?</h2>
+  <p>Ouvrez « Mes commandes », puis cliquez sur la commande. En haut de la page, une frise montre l’avancement : les étapes terminées sont cochées en vert, l’étape en cours est en violet. Le cadre <strong>« Circuit de validation »</strong> indique qui a validé, quand, et qui doit encore le faire.</p>
+
+  <h2>Les e-mails que vous recevez</h2>
+  <table>
+    <tr><th style="width:38%">Quand ?</th><th>Vous recevez…</th></tr>
+    <tr><td class="c1">Votre responsable a validé</td><td>« Votre responsable a validé votre commande » : elle part en comptabilité et à la direction.</td></tr>
+    <tr><td class="c1">Toutes les validations sont obtenues</td><td>« Bonne nouvelle, votre commande est validée ».</td></tr>
+    <tr><td class="c1">La commande a été passée</td><td>« Votre commande a été passée auprès des fournisseurs ».</td></tr>
+    <tr><td class="c1">Un validateur a refusé</td><td>« Votre demande d’achat a été refusée », avec le motif bien en évidence.</td></tr>
+  </table>
+  <div class="grid2" style="align-items:center;margin-top:3mm;grid-template-columns:.8fr 1.2fr">
+    <div class="shot" style="margin:0"><img src="shots/email.png" alt="Exemple d’e-mail"></div>
+    <div>
+      <h3 style="margin-top:0">Un e-mail clair, avec un bouton</h3>
+      <p>Chaque e-mail rappelle le numéro, le demandeur, le service, les articles et le montant, ainsi que l’état du circuit de validation.</p>
+      <p>Le gros bouton coloré ouvre directement la commande dans l’application.</p>
+      <div class="box info" style="margin-top:4mm"><div class="ic">i</div><div>Les e-mails sont envoyés depuis l’adresse de la personne qui vient d’agir (par exemple votre responsable). Vous pouvez donc lui répondre directement.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter">
+  <h2 style="margin-top:0">Le bon de demande d’achat en PDF</h2>
+  <p>Dès que la commande est envoyée, le bouton <strong>« Télécharger le PDF »</strong> apparaît sous le total. Il crée un bon de demande d’achat prêt à imprimer ou à archiver, qui remplace l’ancien formulaire Excel.</p>
+  <div class="grid2" style="align-items:start">
+    <div class="shot" style="margin:0"><img src="shots/print.png" alt="Bon de demande d’achat PDF"></div>
+    <div>
+      <h3 style="margin-top:0">Ce que contient le PDF</h3>
+      <ul style="padding-left:5mm;margin:0">
+        <li>Le numéro de commande et son statut</li>
+        <li>Le demandeur, son service, les dates</li>
+        <li>Le détail des articles, par fournisseur, avec les sous-totaux</li>
+        <li>Le montant total TTC</li>
+        <li>Toutes les signatures électroniques, avec la date et l’heure</li>
+        <li>Les images jointes, en miniature et en grand en annexe</li>
+      </ul>
+      <div class="box tip" style="margin-top:5mm"><div class="ic">✓</div><div><strong class="t">Pour l’enregistrer</strong>Dans la fenêtre d’impression qui s’ouvre, choisissez « Enregistrer au format PDF » comme imprimante, puis cliquez sur « Enregistrer ».</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 VALIDER ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">08</div><div><div class="chapter-kicker">Responsables · Comptabilité · Direction</div><h1>Valider ou refuser une commande</h1></div></div>
+  <p class="lead">Quand une commande attend votre décision, vous recevez un e-mail « Une demande d’achat attend votre validation ». Deux clics suffisent.</p>
+
+  <ol class="steps">
+    <li><h3>Ouvrez la commande</h3>Cliquez sur le bouton de l’e-mail, ou ouvrez « À valider » dans le menu : la pastille indique combien de commandes vous attendent.</li>
+    <li><h3>Consultez-la</h3>Articles, destinations, motifs, pièces jointes (cliquez sur un fichier pour l’ouvrir), total TTC.</li>
+    <li><h3>Décidez</h3>Cliquez sur <strong>« Valider la commande »</strong> puis confirmez. Ou bien cliquez sur <strong>« Refuser… »</strong>.</li>
+  </ol>
+  <div class="shot"><img src="shots/validate.jpg" alt="Valider une commande"></div>
+  <p class="caption">Une commande en attente de la validation du chef d’établissement</p>
+</section>
+
+<section class="chapter">
+  <h2 style="margin-top:0">Refuser une commande</h2>
+  <p>Un refus doit toujours être justifié : écrivez un motif clair (budget, second devis à demander, article inadapté…). Il sera envoyé au demandeur et restera visible sur la commande.</p>
+  <div class="shot narrow"><img src="shots/refus.jpg" alt="Refuser une commande"></div>
+  <p class="caption">La fenêtre de refus, avec le motif obligatoire</p>
+
+  <h2>L’ordre des validations</h2>
+  <div class="grid2">
+    <div class="card"><div class="emoji">1️⃣</div><h3>D’abord le responsable de service</h3><p>La comptabilité et la direction ne peuvent pas valider avant lui : la commande n’apparaît dans leur liste « À valider » qu’une fois son accord donné.</p></div>
+    <div class="card"><div class="emoji">2️⃣</div><h3>Ensuite comptabilité et direction</h3><p>Les deux validations sont obligatoires, dans n’importe quel ordre. Quand l’un a validé, l’autre reçoit un e-mail de rappel.</p></div>
+  </div>
+  <div class="box info"><div class="ic">i</div><div><strong class="t">À plusieurs dans la comptabilité ?</strong>Il suffit qu’une seule personne de la comptabilité valide : la commande disparaît alors de la liste des autres.</div></div>
+</section>
+
+<!-- ============ 09 FINALISER / CONSULTER ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">09</div><div><div class="chapter-kicker">Exécuteurs · Lecteurs</div><h1>Finaliser et consulter les commandes</h1></div></div>
+
+  <h2 style="margin-top:0">Pour l’exécuteur : passer la commande</h2>
+  <ol class="steps">
+    <li><h3>Ouvrez « À finaliser »</h3>Vous y trouvez toutes les commandes validées. Vous avez aussi reçu un e-mail « Une commande validée est prête à être passée ».</li>
+    <li><h3>Passez la commande auprès des fournisseurs</h3>Comme d’habitude, en vous aidant des devis joints et du PDF.</li>
+    <li><h3>Cliquez sur « Marquer comme finalisée »</h3>Le demandeur est prévenu automatiquement que sa commande a été passée.</li>
+  </ol>
+
+  <h2>Pour tous : retrouver une commande</h2>
+  <p>Les listes « À valider », « À finaliser » et « Commandes validées » disposent d’outils de recherche :</p>
+  <div class="shot"><img src="shots/list.jpg" alt="Liste des commandes avec filtres"></div>
+  <div class="grid2">
+    <div><h3>🔎 Rechercher</h3><p class="small">Tapez un numéro, un nom, un fournisseur : la liste se filtre instantanément.</p>
+      <h3>🏢 Filtrer par service</h3><p class="small">Pour n’afficher que les commandes d’un service.</p></div>
+    <div><h3>📍 Filtrer par destination</h3><p class="small">Choisir « Pôle 1 » affiche aussi toutes les commandes de ses bâtiments et salles.</p>
+      <h3>↕️ Trier</h3><p class="small">Par date, service, destination ou montant : avec la liste « Trier », ou en cliquant sur le titre d’une colonne.</p></div>
+  </div>
+</section>
+
+<!-- ============ 10 FAQ ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">10</div><div><div class="chapter-kicker">Tout le monde</div><h1>Questions fréquentes</h1></div></div>
+  <dl class="faq">
+    <dt>J’ai oublié mon mot de passe.</dt>
+    <dd>C’est le mot de passe de votre messagerie du lycée. En cas d’oubli, contactez le service informatique comme d’habitude.</dd>
+    <dt>Je ne vois pas le bouton « Nouvelle commande ».</dt>
+    <dd>Vous n’avez pas encore le rôle Demandeur. Demandez-le au service informatique.</dd>
+    <dt>Je me suis trompé dans un article.</dt>
+    <dd>Tant que la commande est un brouillon : supprimez l’article (icône corbeille) et ajoutez-le de nouveau. Après l’envoi, la commande n’est plus modifiable : demandez un refus avec motif, puis refaites la demande.</dd>
+    <dt>Mon fournisseur n’est pas dans la liste.</dt>
+    <dd>Écrivez simplement son nom : la saisie libre est toujours acceptée.</dd>
+    <dt>Ma destination n’est pas dans la liste.</dt>
+    <dd>Choisissez le lieu le plus proche et précisez dans la description, puis signalez-le au service informatique pour qu’il l’ajoute.</dd>
+    <dt>Mon fichier ne s’ajoute pas.</dt>
+    <dd>Seuls les PDF et les images (PNG, JPG, GIF, WEBP) de moins de 15 Mo sont acceptés. Un document Word ou Excel doit d’abord être enregistré en PDF.</dd>
+    <dt>Mon responsable est absent, ma commande est bloquée.</dt>
+    <dd>Si votre service a plusieurs responsables, choisissez-en un autre lors de l’envoi. Sinon, prévenez le service informatique, qui peut désigner un remplaçant.</dd>
+    <dt>Je n’ai pas reçu l’e-mail.</dt>
+    <dd>Regardez dans le dossier « Courrier indésirable ». Dans tous les cas, la page « À valider » ou « Mes commandes » est toujours à jour.</dd>
+    <dt>Puis-je utiliser l’application depuis chez moi ou sur mon téléphone ?</dt>
+    <dd>Oui : l’adresse fonctionne partout, sur ordinateur, tablette et téléphone, avec votre compte du lycée.</dd>
+    <dt>Est-ce que je peux encore utiliser le formulaire Excel ?</dt>
+    <dd>Non : une fois l’application en service, toutes les demandes passent par elle. Le PDF de chaque commande remplace le formulaire papier.</dd>
+  </dl>
+</section>
+
+<!-- ============ 11 DIRECTION ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">11</div><div><div class="chapter-kicker">Direction</div><h1>Sécurité, déploiement et assistance</h1></div></div>
+
+  <h2 style="margin-top:0">Sécurité et confidentialité</h2>
+  <div class="grid2">
+    <div class="card"><div class="emoji">🔐</div><h3>Connexion Microsoft du lycée</h3><p>Aucun mot de passe n’est stocké par l’application. Seuls les comptes @st-marc.eu autorisés peuvent se connecter ; l’accès peut être limité à des groupes précis (par exemple, exclure les élèves).</p></div>
+    <div class="card"><div class="emoji">🧭</div><h3>Chacun ne voit que ce qui le concerne</h3><p>Un demandeur ne voit que ses propres demandes ; les brouillons ne sont visibles que par leur auteur. Les lecteurs et exécuteurs ne voient que les commandes validées.</p></div>
+    <div class="card"><div class="emoji">✍️</div><h3>Signatures horodatées</h3><p>Chaque action (envoi, validation, refus, finalisation) est enregistrée avec son auteur, la date et l’heure. Personne ne peut modifier cet historique depuis l’application.</p></div>
+    <div class="card"><div class="emoji">🗄️</div><h3>Données maîtrisées</h3><p>Les commandes et les pièces jointes sont stockées dans la base de données du site du lycée, chez son hébergeur habituel, et non dans un service grand public. Les pièces jointes ne sont accessibles qu’après connexion.</p></div>
+  </div>
+
+  <h2>Déploiement proposé</h2>
+  <ol class="timeline">
+    <li><span class="when">Étape 1</span><span><strong>Présentation</strong> au conseil de direction et validation du circuit (responsables de service, comptabilité, chef d’établissement).</span></li>
+    <li><span class="when">Étape 2</span><span><strong>Configuration</strong> par le service informatique : services, responsables, rôles, destinations, fournisseurs habituels. Test complet du circuit grâce à l’outil de simulation intégré.</span></li>
+    <li><span class="when">Étape 3</span><span><strong>Phase pilote</strong> avec un ou deux services, pendant quelques semaines, pour recueillir les remarques.</span></li>
+    <li><span class="when">Étape 4</span><span><strong>Généralisation</strong> à tout le personnel, avec ce guide et une courte démonstration en réunion.</span></li>
+    <li><span class="when">Étape 5</span><span><strong>Abandon du formulaire Excel</strong> : toutes les nouvelles demandes passent par l’application.</span></li>
+  </ol>
+
+</section>
+
+<!-- ============ 12 AIDE-MÉMOIRE ============ -->
+<section class="chapter">
+  <div class="chapter-head"><div class="chapter-num">12</div><div><div class="chapter-kicker">À imprimer et garder près de son poste</div><h1>Aide-mémoire</h1></div></div>
+  <div class="memo">
+    <p style="text-align:center;margin-bottom:6mm"><span class="url">commandes.st-marc.eu</span><br><span class="small muted">Connexion avec votre compte @st-marc.eu · même mot de passe que la messagerie</span></p>
+    <div class="memo-grid">
+      <div>
+        <h3>✍️ Faire une demande</h3>
+        <ol>
+          <li>« Nouvelle commande »</li>
+          <li>« Ajouter un article » pour chaque article : fournisseur, destination, description, motif, quantité, prix</li>
+          <li>Joindre devis ou captures d’écran</li>
+          <li>Vérifier le total</li>
+          <li>Choisir son responsable si demandé</li>
+          <li>« Envoyer pour validation »</li>
+        </ol>
+      </div>
+      <div>
+        <h3>📸 Capture d’écran en 3 touches</h3>
+        <ol>
+          <li><kbd>⊞</kbd> + <kbd>Maj</kbd> + <kbd>S</kbd></li>
+          <li>Entourer la zone à capturer</li>
+          <li>Dans l’application : <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+        </ol>
+        <h3 style="margin-top:5mm">✅ Valider une commande</h3>
+        <ol>
+          <li>Ouvrir l’e-mail ou « À valider »</li>
+          <li>Vérifier articles et pièces jointes</li>
+          <li>« Valider la commande » ou « Refuser… » avec un motif</li>
+        </ol>
+      </div>
+    </div>
+    <h3 style="margin-top:6mm">Le circuit</h3>
+    <p style="font-size:10.5pt">Demandeur ✍️ → Responsable de service 👤 → Comptabilité 💶 + Chef d’établissement 🏛️ → Exécuteur 📦 → Finalisé ✅</p>
+    <p style="margin-top:3mm">
+      <span class="pill p-brouillon">Brouillon</span> <span class="pill p-attente">En attente</span> <span class="pill p-validation">En validation</span>
+      <span class="pill p-valide">Validé</span> <span class="pill p-finalise">Finalisé</span> <span class="pill p-refuse">Refusé</span>
+    </p>
+  </div>
+  <div class="box tip" style="margin-top:5mm"><div class="ic">✓</div><div><strong class="t">Besoin d’aide ? Le service informatique du lycée</strong>Pour obtenir un accès, un rôle, un nouveau service, une destination manquante ou pour toute question : <strong>informatique@st-marc.eu</strong>. N’hésitez pas à passer au bureau : une démonstration de cinq minutes suffit le plus souvent.</div></div>
+</section>
+
+</body>
+</html>

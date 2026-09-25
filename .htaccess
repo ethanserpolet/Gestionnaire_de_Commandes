@@ -1,0 +1,8 @@
+# Web root must point to /public. This file blocks direct access if it doesn't.
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ /public/$1 [L]
+
+<FilesMatch "\.env$">
+    Require all denied
+</FilesMatch>
