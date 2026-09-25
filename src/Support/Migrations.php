@@ -79,11 +79,71 @@ final class Migrations
             $log[] = count($sansExecution) . ' commande(s) validée(s) réparties entre exécuteurs';
         }
 
+        $log = array_merge($log, self::dropValidateurRole($pdo));
+
+        // Ordre manuel des destinations (glisser-déposer) : on part de l'ordre alphabétique actuel.
+        if (!self::hasColumn($pdo, 'destinations', 'position')) {
+            $pdo->exec('ALTER TABLE destinations ADD COLUMN position INT NOT NULL DEFAULT 0 AFTER name');
+            $update = $pdo->prepare('UPDATE destinations SET position = ? WHERE id = ?');
+            $number = static function (array $nodes) use (&$number, $update): void {
+                foreach (array_values($nodes) as $i => $node) {
+                    $update->execute([$i, (int) $node['id']]);
+                    $number($node['children']);
+                }
+            };
+            $number(\App\Repositories\DestinationRepository::tree());
+            $log[] = 'destinations.position ajoutée (ordre personnalisable)';
+        }
+
         if ((int) $pdo->query('SELECT COUNT(*) FROM destinations')->fetchColumn() === 0) {
             self::seedDestinations($pdo);
             $log[] = 'Destinations par défaut créées (Pôle 1 / Pôle 2)';
         }
 
+        return $log;
+    }
+
+    /**
+     * Le rôle générique « Validateur » est supprimé : le circuit se limite au responsable de service,
+     * à la comptabilité et au chef d'établissement. Les signatures déjà données restent dans l'historique.
+     * @return string[]
+     */
+    private static function dropValidateurRole(PDO $pdo): array
+    {
+        $log = [];
+        $touched = $pdo->query(
+            "SELECT DISTINCT commande_id FROM commande_validations
+             WHERE role = 'validateur' AND decision = 'en_attente'"
+        )->fetchAll(PDO::FETCH_COLUMN);
+        if ($touched) {
+            $pdo->exec("DELETE FROM commande_validations WHERE role = 'validateur' AND decision = 'en_attente'");
+            $log[] = count($touched) . ' commande(s) en cours : validation « Validateur » retirée du circuit';
+        }
+
+        // Commandes dont il ne restait que ces validations : elles deviennent validées.
+        $completes = $pdo->query(
+            "SELECT c.id FROM commandes c
+             WHERE c.statut IN ('en_attente', 'en_validation')
+               AND NOT EXISTS (SELECT 1 FROM commande_validations v
+                               WHERE v.commande_id = c.id AND v.decision = 'en_attente')"
+        )->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($completes as $commandeId) {
+            \App\Repositories\CommandeRepository::setStatut((int) $commandeId, 'valide');
+            \App\Repositories\CommandeRepository::logEvent((int) $commandeId, null, 'info',
+                'Toutes les validations requises obtenues (rôle « Validateur » supprimé) : commande validée.');
+            \App\Services\CommandeService::createExecutions((int) $commandeId);
+        }
+        if ($completes) {
+            $log[] = count($completes) . ' commande(s) passée(s) en « Validé » et transmises aux exécuteurs (sans e-mail)';
+        }
+
+        $removed = $pdo->exec(
+            "DELETE ur FROM user_roles ur JOIN roles r ON r.id = ur.role_id WHERE r.code = 'validateur'"
+        );
+        $pdo->exec("DELETE FROM roles WHERE code = 'validateur'");
+        if ($removed) {
+            $log[] = "Rôle « Validateur » supprimé ($removed attribution(s) retirée(s))";
+        }
         return $log;
     }
 
@@ -93,12 +153,13 @@ final class Migrations
             'Pôle 1' => ['Bat A-D', 'Cantine Prof', 'Amphi', 'VS', 'Infirmerie', 'IT', 'Accueil', 'Admin', 'Gymnase', 'Cantine Élève'],
             'Pôle 2' => ['Bat E-G', 'Cantine Prof', 'Cantine Élève', 'Admin', 'VS'],
         ];
-        $insert = $pdo->prepare('INSERT INTO destinations (parent_id, name) VALUES (?, ?)');
+        $insert = $pdo->prepare('INSERT INTO destinations (parent_id, name, position) VALUES (?, ?, ?)');
+        $p = 0;
         foreach ($defaults as $pole => $lieux) {
-            $insert->execute([null, $pole]);
+            $insert->execute([null, $pole, $p++]);
             $poleId = (int) $pdo->lastInsertId();
-            foreach ($lieux as $lieu) {
-                $insert->execute([$poleId, $lieu]);
+            foreach ($lieux as $i => $lieu) {
+                $insert->execute([$poleId, $lieu, $i]);
             }
         }
     }

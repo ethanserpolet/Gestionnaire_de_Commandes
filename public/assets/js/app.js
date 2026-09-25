@@ -476,4 +476,140 @@
             sortBy(key, dir);
         }
     });
+
+    // --- Toast créé côté client (même rendu que les messages flash) --------
+    const TOAST_ICONS = {
+        success: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+        error: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+    };
+    function showToast(message, type = 'success') {
+        const box = $('.toasts');
+        if (!box) return;
+        const svg = (paths, size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-' + type;
+        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toast.setAttribute('data-toast', '');
+        toast.innerHTML = `<span class="toast-icon">${svg(TOAST_ICONS[type] || TOAST_ICONS.success, 18)}</span>`
+            + '<div class="toast-msg"></div>'
+            + `<button type="button" class="toast-close" data-toast-close aria-label="Fermer">${svg('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', 16)}</button>`;
+        $('.toast-msg', toast).textContent = message;
+        box.appendChild(toast);
+        setTimeout(() => dismissToast(toast), type === 'error' ? 9000 : 3500);
+    }
+
+    // --- Destinations : glisser-déposer dans l'arborescence ----------------
+    const destTree = $('[data-dest-tree]');
+    if (destTree) {
+        const nodesOf = (list) => Array.from(list.children).filter((el) => el.classList.contains('dest-node'));
+        const refreshEmpty = () => $$('.dest-children', destTree).forEach((list) => list.classList.toggle('is-empty', !nodesOf(list).length));
+
+        const save = (list, parentChanged) => {
+            const body = new FormData();
+            body.append('csrf_token', destTree.dataset.csrf);
+            body.append('parent_id', list.dataset.parentId || '');
+            nodesOf(list).forEach((n) => body.append('ids[]', n.dataset.destId));
+            destTree.classList.add('is-saving');
+            fetch(destTree.dataset.reorderUrl, { method: 'POST', body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+                .then((r) => r.json().catch(() => ({ ok: false, message: 'Session expirée, rechargez la page.' })))
+                .then((res) => {
+                    if (!res.ok) throw new Error(res.message || 'Enregistrement impossible.');
+                    // Changement de parent : icônes, compteurs et état « masqué » dépendent du niveau.
+                    if (parentChanged) { window.location.reload(); return; }
+                    destTree.classList.remove('is-saving');
+                    showToast(res.message || 'Ordre enregistré.');
+                })
+                .catch((err) => {
+                    showToast(err.message || 'Enregistrement impossible.', 'error');
+                    setTimeout(() => window.location.reload(), 1800);
+                });
+        };
+
+        // Nœud inséré avant le premier frère dont la ligne est sous le curseur.
+        const insertionPoint = (list, y, dragged) => nodesOf(list).find((n) => {
+            if (n === dragged) return false;
+            const r = n.querySelector(':scope > .dest-row').getBoundingClientRect();
+            return y < r.top + r.height / 2;
+        }) || null;
+
+        let dragged = null;
+        let origin = null;
+        let dropped = false;
+
+        destTree.addEventListener('pointerdown', (e) => {
+            const handle = e.target.closest('[data-dest-handle]');
+            if (handle) handle.closest('.dest-node').draggable = true;
+        });
+        destTree.addEventListener('pointerup', (e) => {
+            const handle = e.target.closest('[data-dest-handle]');
+            if (handle && !dragged) handle.closest('.dest-node').draggable = false;
+        });
+
+        destTree.addEventListener('dragstart', (e) => {
+            const node = e.target.closest && e.target.closest('.dest-node');
+            if (!node || !node.draggable) { e.preventDefault(); return; }
+            dragged = node;
+            dropped = false;
+            origin = { list: node.parentElement, next: node.nextElementSibling };
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', node.dataset.destId);
+            requestAnimationFrame(() => {
+                if (dragged !== node) return; // glisser déjà terminé
+                node.classList.add('is-dragging');
+                destTree.classList.add('is-sorting');
+            });
+        });
+
+        destTree.addEventListener('dragover', (e) => {
+            if (!dragged) return;
+            const list = e.target.closest('[data-dest-list]');
+            if (!list || dragged.contains(list)) return; // jamais dans sa propre descendance
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const before = insertionPoint(list, e.clientY, dragged);
+            if (dragged.parentElement !== list || dragged.nextElementSibling !== before) {
+                list.insertBefore(dragged, before);
+                refreshEmpty();
+            }
+        });
+
+        destTree.addEventListener('drop', (e) => {
+            if (!dragged) return;
+            e.preventDefault();
+            dropped = true;
+        });
+
+        destTree.addEventListener('dragend', () => {
+            if (!dragged) return;
+            const node = dragged;
+            dragged = null;
+            node.draggable = false;
+            node.classList.remove('is-dragging');
+            destTree.classList.remove('is-sorting');
+
+            if (!dropped) { // Échap ou dépôt hors de l'arbre : retour à la place d'origine
+                origin.list.insertBefore(node, origin.next);
+                refreshEmpty();
+                return;
+            }
+            const list = node.parentElement;
+            if (list === origin.list && node.nextElementSibling === origin.next) return;
+            save(list, list !== origin.list);
+        });
+
+        // Clavier : flèches haut / bas sur la poignée, parmi les éléments du même niveau.
+        destTree.addEventListener('keydown', (e) => {
+            const handle = e.target.closest('[data-dest-handle]');
+            if (!handle || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+            e.preventDefault();
+            const node = handle.closest('.dest-node');
+            const siblings = nodesOf(node.parentElement);
+            const i = siblings.indexOf(node);
+            const target = siblings[e.key === 'ArrowUp' ? i - 1 : i + 1];
+            if (!target) return;
+            node.parentElement.insertBefore(node, e.key === 'ArrowUp' ? target : target.nextElementSibling);
+            handle.focus();
+            save(node.parentElement, false);
+        });
+    }
 })();

@@ -18,7 +18,7 @@ $documentTitle = isset($pageTitle) ? $pageTitle . ' · Commandes St Marc' : 'Com
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="/assets/css/app.css?v=8">
+    <link rel="stylesheet" href="/assets/css/app.css?v=9">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -57,6 +57,6 @@ $documentTitle = isset($pageTitle) ? $pageTitle . ' · Commandes St Marc' : 'Com
 
 <?php require __DIR__ . '/partials/flash.php'; ?>
 <?php require __DIR__ . '/partials/confirm_dialog.php'; ?>
-<script src="/assets/js/app.js?v=8"></script>
+<script src="/assets/js/app.js?v=9"></script>
 </body>
 </html>

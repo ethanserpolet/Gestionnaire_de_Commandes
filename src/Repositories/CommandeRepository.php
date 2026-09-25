@@ -301,6 +301,8 @@ final class CommandeRepository
     /**
      * SQL condition (aliases c / cv) matching the slots this user can decide right now:
      * pending, in the lowest unfinished stage, and assigned to them or open to one of their roles.
+     * Un demandeur peut valider sa propre commande dans son rôle : la seconde signature de
+     * l'étape 2 (comptabilité ↔ chef d'établissement) sert de contrôle.
      *
      * @return array{0:string,1:array}
      */

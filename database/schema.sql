@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS roles (
 
 INSERT IGNORE INTO roles (code, label) VALUES
     ('demandeur', 'Demandeur'),
-    ('validateur', 'Validateur'),
     ('executeur', 'Exécuteur'),
     ('lecteur', 'Lecteur'),
     ('responsable_service', 'Responsable de service'),
@@ -47,6 +46,7 @@ CREATE TABLE IF NOT EXISTS destinations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     parent_id INT NULL,
     name VARCHAR(120) NOT NULL,
+    position INT NOT NULL DEFAULT 0,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (parent_id) REFERENCES destinations(id) ON DELETE CASCADE

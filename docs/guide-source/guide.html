@@ -205,7 +205,7 @@ td.c1 { font-weight: 700; width: 30%; }
     <li><span class="num">06</span> Faire une demande d’achat <span class="who">Demandeurs</span></li>
     <li><span class="num">07</span> Suivre sa commande, e-mails et PDF <span class="who">Demandeurs</span></li>
     <li><span class="num">08</span> Valider ou refuser une commande <span class="who">Responsables · Comptabilité · Direction</span></li>
-    <li><span class="num">09</span> Finaliser et consulter les commandes <span class="who">Exécuteurs · Lecteurs</span></li>
+    <li><span class="num">09</span> Passer et consulter les commandes <span class="who">Exécuteurs · Comptabilité · Lecteurs</span></li>
     <li><span class="num">10</span> Questions fréquentes <span class="who">Tout le monde</span></li>
     <li><span class="num">11</span> Sécurité, déploiement et assistance <span class="who">Direction</span></li>
     <li><span class="num">12</span> Aide-mémoire à imprimer <span class="who">Tout le monde</span></li>
@@ -270,7 +270,7 @@ td.c1 { font-weight: 700; width: 30%; }
     <div class="flow-step"><div class="flow-ic t-primary">✍️</div><strong>1. Le demandeur</strong><span>crée la demande, joint les devis et l’envoie : elle est signée à son nom</span></div>
     <div class="flow-step"><div class="flow-ic t-info">👤</div><strong>2. Le responsable de service</strong><span>valide en premier les demandes de son équipe</span></div>
     <div class="flow-step"><div class="flow-ic t-warning">🏛️</div><strong>3. Comptabilité et chef d’établissement</strong><span>valident tous les deux, dans l’ordre qu’ils souhaitent</span></div>
-    <div class="flow-step"><div class="flow-ic t-success">📦</div><strong>4. L’exécuteur</strong><span>passe la commande auprès des fournisseurs</span></div>
+    <div class="flow-step"><div class="flow-ic t-success">📦</div><strong>4. L’exécuteur</strong><span>passe la commande, fournisseur par fournisseur</span></div>
     <div class="flow-step"><div class="flow-ic t-teal">✅</div><strong>5. Terminé</strong><span>la commande est finalisée, le demandeur est prévenu</span></div>
   </div>
 
@@ -300,9 +300,9 @@ td.c1 { font-weight: 700; width: 30%; }
     <tr><th style="width:30%">Rôle</th><th>Ce que vous pouvez faire</th><th style="width:25%">Dans votre menu</th></tr>
     <tr><td class="c1">✍️ Demandeur</td><td>Créer des demandes d’achat, y joindre des devis ou des captures, les envoyer et suivre leur avancement.</td><td>« Mes commandes » et le bouton « Nouvelle commande »</td></tr>
     <tr><td class="c1">👤 Responsable de service</td><td>Valider ou refuser en premier les demandes des membres de son service.</td><td>« À valider »</td></tr>
-    <tr><td class="c1">💶 Comptabilité</td><td>Valider ou refuser chaque commande après le responsable de service. Une seule personne de la comptabilité suffit.</td><td>« À valider »</td></tr>
+    <tr><td class="c1">💶 Comptabilité</td><td>Valider ou refuser chaque commande après le responsable de service (une seule personne de la comptabilité suffit), puis passer les commandes des fournisseurs qui n’ont pas d’exécuteur attitré.</td><td>« À valider » et « À passer »</td></tr>
     <tr><td class="c1">🏛️ Chef d’établissement</td><td>Valider ou refuser chaque commande après le responsable de service.</td><td>« À valider »</td></tr>
-    <tr><td class="c1">📦 Exécuteur</td><td>Passer les commandes validées auprès des fournisseurs, puis les marquer comme finalisées.</td><td>« À finaliser »</td></tr>
+    <tr><td class="c1">📦 Exécuteur</td><td>Passer les commandes validées auprès des fournisseurs qui lui sont confiés, puis les marquer comme passées.</td><td>« À passer »</td></tr>
     <tr><td class="c1">👁️ Lecteur</td><td>Consulter les commandes validées et finalisées, les trier et les filtrer, télécharger leur PDF.</td><td>« Commandes validées »</td></tr>
     <tr><td class="c1">⚙️ Administrateur</td><td>Gérer les utilisateurs et leurs rôles, les services et leurs responsables, les destinations et les fournisseurs.</td><td>« Administration »</td></tr>
   </table>
@@ -511,17 +511,18 @@ td.c1 { font-weight: 700; width: 30%; }
 
 <!-- ============ 09 FINALISER / CONSULTER ============ -->
 <section class="chapter">
-  <div class="chapter-head"><div class="chapter-num">09</div><div><div class="chapter-kicker">Exécuteurs · Lecteurs</div><h1>Finaliser et consulter les commandes</h1></div></div>
+  <div class="chapter-head"><div class="chapter-num">09</div><div><div class="chapter-kicker">Exécuteurs · Comptabilité · Lecteurs</div><h1>Passer et consulter les commandes</h1></div></div>
 
   <h2 style="margin-top:0">Pour l’exécuteur : passer la commande</h2>
+  <p>Une commande validée est répartie <strong>par fournisseur</strong> : chacun a son exécuteur attitré ; sans exécuteur ou hors liste, c’est la <strong>comptabilité</strong>.</p>
   <ol class="steps">
-    <li><h3>Ouvrez « À finaliser »</h3>Vous y trouvez toutes les commandes validées. Vous avez aussi reçu un e-mail « Une commande validée est prête à être passée ».</li>
-    <li><h3>Passez la commande auprès des fournisseurs</h3>Comme d’habitude, en vous aidant des devis joints et du PDF.</li>
-    <li><h3>Cliquez sur « Marquer comme finalisée »</h3>Le demandeur est prévenu automatiquement que sa commande a été passée.</li>
+    <li><h3>Ouvrez « À passer »</h3>Vous y trouvez les commandes qui vous attendent, annoncées aussi par e-mail.</li>
+    <li><h3>Passez la commande auprès du fournisseur</h3>Comme d’habitude, en vous aidant des devis joints et du PDF.</li>
+    <li><h3>Cliquez sur « Marquer comme passée »</h3>Quand toutes les parts sont passées, la commande devient « Finalisé » et le demandeur est prévenu.</li>
   </ol>
 
   <h2>Pour tous : retrouver une commande</h2>
-  <p>Les listes « À valider », « À finaliser » et « Commandes validées » disposent d’outils de recherche :</p>
+  <p>Les listes « À valider », « À passer » et « Commandes validées » disposent d’outils de recherche :</p>
   <div class="shot"><img src="shots/list.jpg" alt="Liste des commandes avec filtres"></div>
   <div class="grid2">
     <div><h3>🔎 Rechercher</h3><p class="small">Tapez un numéro, un nom, un fournisseur : la liste se filtre instantanément.</p>

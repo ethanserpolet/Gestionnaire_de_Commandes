@@ -44,4 +44,22 @@ final class DashboardController
 
         View::render('dashboard/index', $data);
     }
+
+    /** Guide d'utilisation (docs/), affiché dans le navigateur. */
+    public static function tutorial(): void
+    {
+        Guards::requireLogin();
+        $file = dirname(__DIR__, 3) . '/docs/Guide-Commandes-St-Marc.pdf';
+        if (!is_file($file)) {
+            http_response_code(404);
+            View::render('errors/404', []);
+            return;
+        }
+        header('Content-Type: application/pdf');
+        header('Content-Length: ' . filesize($file));
+        header('Content-Disposition: inline; filename="Guide-Commandes-St-Marc.pdf"');
+        header('Cache-Control: private, max-age=3600');
+        readfile($file);
+        exit;
+    }
 }

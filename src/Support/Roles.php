@@ -6,14 +6,14 @@ namespace App\Support;
 final class Roles
 {
     /** Roles that take part in the validation circuit. */
-    public const VALIDATORS = ['responsable_service', 'comptabilite', 'chef_etablissement', 'validateur'];
+    public const VALIDATORS = ['responsable_service', 'comptabilite', 'chef_etablissement'];
 
     /** Roles that may pass validated orders to suppliers (comptabilité is the default executor). */
     public const EXECUTORS = ['executeur', 'comptabilite'];
 
     private const LABELS = [
         'demandeur' => 'Demandeur',
-        'validateur' => 'Validateur',
+        'validateur' => 'Validateur', // ancien rôle, conservé pour l'affichage de l'historique
         'executeur' => 'Exécuteur',
         'lecteur' => 'Lecteur',
         'comptabilite' => 'Comptabilité',

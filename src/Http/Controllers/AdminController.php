@@ -318,6 +318,25 @@ final class AdminController
         exit;
     }
 
+    /** Glisser-déposer : appelé en fetch, répond en JSON. */
+    public static function reorderDestinations(): void
+    {
+        Guards::requireAdmin();
+        Csrf::verifyRequest();
+
+        header('Content-Type: application/json; charset=utf-8');
+        $parentId = (int) ($_POST['parent_id'] ?? 0) ?: null;
+        $ids = is_array($_POST['ids'] ?? null) ? $_POST['ids'] : [];
+        try {
+            DestinationRepository::reorder($parentId, $ids);
+            echo json_encode(['ok' => true, 'message' => 'Ordre enregistré.']);
+        } catch (\RuntimeException $e) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'message' => $e->getMessage()]);
+        }
+        exit;
+    }
+
     public static function renameDestination(array $params): void
     {
         Guards::requireAdmin();

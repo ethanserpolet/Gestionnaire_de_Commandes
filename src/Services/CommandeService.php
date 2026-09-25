@@ -15,7 +15,8 @@ use RuntimeException;
 /**
  * Validation circuit:
  *   étape 1 — responsable du service du demandeur ;
- *   étape 2 — comptabilité + chef d'établissement (s'ils existent) + validateurs individuels.
+ *   étape 2 — comptabilité + chef d'établissement (s'ils existent) ;
+ *   puis passage de commande, une part par fournisseur.
  * Every mail is sent through Graph as the user performing the action.
  */
 final class CommandeService
@@ -233,22 +234,23 @@ final class CommandeService
         throw new RuntimeException('Choisissez le responsable de service qui validera votre commande.');
     }
 
+    /**
+     * Circuit de validation d'une commande. La comptabilité ou le chef d'établissement peuvent
+     * valider leur propre demande dans leur rôle : l'autre signature de l'étape 2 reste exigée.
+     *
+     * @return array<int,array{etape:int,role:string,assigned_to:?int}>
+     */
     private static function buildSlots(?int $responsableId): array
     {
         $slots = [];
         if ($responsableId) {
             $slots[] = ['etape' => 1, 'role' => 'responsable_service', 'assigned_to' => $responsableId];
         }
-
         foreach (['comptabilite', 'chef_etablissement'] as $role) {
             if (UserRepository::findActiveByRole($role)) {
                 $slots[] = ['etape' => 2, 'role' => $role, 'assigned_to' => null];
             }
         }
-        foreach (UserRepository::findActiveByRole('validateur') as $v) {
-            $slots[] = ['etape' => 2, 'role' => 'validateur', 'assigned_to' => (int) $v['id']];
-        }
-
         return $slots;
     }
 

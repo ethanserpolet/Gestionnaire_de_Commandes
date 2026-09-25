@@ -20,8 +20,11 @@ $renderNode = static function (array $node, int $depth, bool $parentHidden) use 
     $descendants = $countDescendants($node);
     $kind = $depth === 0 ? 'pôle' : 'lieu';
     ?>
-    <div class="dest-node<?= $hidden ? ' is-hidden' : '' ?>" data-filter-item data-filter-text="<?= View::e($node['name']) ?>">
+    <div class="dest-node<?= $hidden ? ' is-hidden' : '' ?>" data-dest-id="<?= $id ?>" data-filter-item data-filter-text="<?= View::e($node['name']) ?>">
         <div class="dest-row">
+            <button type="button" class="dest-handle" data-dest-handle
+                    title="Glisser pour déplacer (ou flèches ↑ ↓ du clavier)"
+                    aria-label="Déplacer « <?= View::e($node['name']) ?> »"><?= View::icon('grip', 16) ?></button>
             <span class="dest-icon <?= $depth === 0 ? 'tone-primary' : 'tone-neutral' ?>"><?= View::icon($depth === 0 ? 'building' : 'map-pin', 16) ?></span>
 
             <form class="rename" method="post" action="/admin/destinations/<?= $id ?>/renommer">
@@ -61,13 +64,13 @@ $renderNode = static function (array $node, int $depth, bool $parentHidden) use 
             </div>
         </div>
 
-        <?php if ($node['children']): ?>
-            <div class="dest-children">
-                <?php foreach ($node['children'] as $child) {
-                    $renderNode($child, $depth + 1, $hidden);
-                } ?>
-            </div>
-        <?php endif; ?>
+        <?php // Toujours présent : zone de dépôt pour transformer un lieu en parent. ?>
+        <div class="dest-children<?= $node['children'] ? '' : ' is-empty' ?>" data-dest-list data-parent-id="<?= $id ?>"
+             data-drop-label="Déposer ici pour en faire un sous-lieu de « <?= View::e($node['name']) ?> »">
+            <?php foreach ($node['children'] as $child) {
+                $renderNode($child, $depth + 1, $hidden);
+            } ?>
+        </div>
     </div>
     <?php
 };
@@ -112,7 +115,9 @@ $renderNode = static function (array $node, int $depth, bool $parentHidden) use 
                 <p>Créez un premier pôle, puis ses lieux.</p>
             </div>
         <?php else: ?>
-            <div class="dest-tree">
+            <p class="dest-help"><?= View::icon('grip', 14) ?> Glissez un élément par sa poignée pour changer son ordre, ou déposez-le dans un autre pôle ou lieu. L’ordre est celui de la liste « Destination » des demandeurs.</p>
+            <div class="dest-tree" data-dest-tree data-dest-list data-parent-id=""
+                 data-reorder-url="/admin/destinations/ordre" data-csrf="<?= View::e(Csrf::token()) ?>">
                 <?php foreach ($tree as $root) {
                     $renderNode($root, 0, false);
                 } ?>

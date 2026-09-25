@@ -118,7 +118,7 @@ final class SimulationService
         }
 
         $parRole = [];
-        foreach (['comptabilite', 'chef_etablissement', 'validateur', 'executeur', 'lecteur'] as $role) {
+        foreach (['comptabilite', 'chef_etablissement', 'executeur', 'lecteur'] as $role) {
             $parRole[$role] = UserRepository::findActiveByRole($role);
             $label = Roles::label($role);
             if ($parRole[$role]) {
@@ -176,8 +176,7 @@ final class SimulationService
 
         $prevus = ($attendu ? 1 : 0)
             + ($parRole['comptabilite'] ? 1 : 0)
-            + ($parRole['chef_etablissement'] ? 1 : 0)
-            + count($parRole['validateur']);
+            + ($parRole['chef_etablissement'] ? 1 : 0);
         $this->check(
             count($c['validations']) === $prevus,
             'Circuit conforme : ' . $prevus . ' validation(s) prévue(s)',

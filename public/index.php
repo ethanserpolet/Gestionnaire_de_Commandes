@@ -31,6 +31,7 @@ Session::start();
 $router = new Router();
 
 $router->get('/', static fn() => DashboardController::index());
+$router->get('/tutoriel', static fn() => DashboardController::tutorial());
 
 $router->get('/login', static fn() => AuthController::showLogin());
 $router->get('/auth/microsoft', static fn() => AuthController::start());
@@ -72,6 +73,7 @@ $router->post('/admin/simulation', static fn() => AdminController::runSimulation
 $router->post('/admin/simulation/mail-test', static fn() => AdminController::sendTestMail());
 $router->get('/admin/destinations', static fn() => AdminController::destinations());
 $router->post('/admin/destinations', static fn() => AdminController::createDestination());
+$router->post('/admin/destinations/ordre', static fn() => AdminController::reorderDestinations());
 $router->post('/admin/destinations/{id}/renommer', static fn($p) => AdminController::renameDestination($p));
 $router->post('/admin/destinations/{id}/actif', static fn($p) => AdminController::toggleDestination($p));
 $router->post('/admin/destinations/{id}/supprimer', static fn($p) => AdminController::deleteDestination($p));

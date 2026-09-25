@@ -21,7 +21,11 @@ try {
     $navCounts = [];
 }
 
-$navSections = ['Général' => [['/', 'Tableau de bord', 'dashboard']]];
+// 4e élément : ouverture dans un nouvel onglet.
+$navSections = ['Général' => [
+    ['/', 'Tableau de bord', 'dashboard'],
+    ['/tutoriel', 'Tutoriel', 'book', true],
+]];
 
 $navCommandes = [];
 if ($navHas('demandeur')) {
@@ -72,8 +76,11 @@ $navIsActive = static fn(string $href): bool => $href === '/' ? $path === '/' : 
             <?php foreach ($navSections as $sectionLabel => $sectionItems): ?>
                 <div class="nav-label"><?= View::e($sectionLabel) ?></div>
                 <div class="nav">
-                    <?php foreach ($sectionItems as [$href, $label, $icon]): $isActive = $navIsActive($href); ?>
-                        <a href="<?= View::e($href) ?>" class="nav-item<?= $isActive ? ' active' : '' ?>"<?= $isActive ? ' aria-current="page"' : '' ?>>
+                    <?php foreach ($sectionItems as $navItem):
+                        [$href, $label, $icon] = $navItem;
+                        $newTab = !empty($navItem[3]);
+                        $isActive = !$newTab && $navIsActive($href); ?>
+                        <a href="<?= View::e($href) ?>" class="nav-item<?= $isActive ? ' active' : '' ?>"<?= $isActive ? ' aria-current="page"' : '' ?><?= $newTab ? ' target="_blank" rel="noopener"' : '' ?>>
                             <?= View::icon($icon) ?>
                             <span><?= View::e($label) ?></span>
                             <?php if (!empty($navCounts[$href])): ?>

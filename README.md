@@ -7,7 +7,8 @@ passage des commandes auprès des fournisseurs, notifications par e-mail et bon 
 - **URL** : https://commandes.st-marc.eu
 - **Connexion** : comptes Microsoft 365 `@st-marc.eu` (Entra ID, OAuth2)
 - **Pile** : PHP 8.1+ natif (aucune dépendance Composer), MariaDB, Microsoft Graph
-- **Guide utilisateur** : [`docs/Guide-Commandes-St-Marc.pdf`](docs/Guide-Commandes-St-Marc.pdf)
+- **Guide utilisateur** : [`docs/Guide-Commandes-St-Marc.pdf`](docs/Guide-Commandes-St-Marc.pdf),
+  ouvert depuis le menu « Tutoriel » de l'application (`/tutoriel`, réservé aux utilisateurs connectés)
 
 ---
 
@@ -49,8 +50,8 @@ Demandeur ──► Responsable de service ──► Comptabilité + Chef d’é
    que le demandeur choisit s’il y en a plusieurs. Étape sautée si le service n’a pas de
    responsable ou si le demandeur est lui-même responsable du service.
 2. **Étape 2 — comptabilité et chef d’établissement** : une validation par rôle, par n’importe
-   quel membre du rôle (étape sautée pour un rôle sans titulaire), plus chaque utilisateur ayant
-   le rôle générique « Validateur ». Cette étape ne s’ouvre qu’après l’étape 1.
+   quel membre du rôle (étape sautée pour un rôle sans titulaire). Les deux signatures sont
+   exigées. Cette étape ne s’ouvre qu’après l’étape 1.
 
 **Exécution** : à la validation, la commande est découpée **en une part par fournisseur**.
 Chaque part est confiée à l’**exécuteur attitré** du fournisseur (Administration › Fournisseurs).
@@ -76,7 +77,6 @@ horodatées et images en annexe, généré par le navigateur.
 | Responsable de service | Valider en étape 1 les demandes de son service |
 | Comptabilité | Valider en étape 2 ; passer les commandes des fournisseurs sans exécuteur attitré |
 | Chef d’établissement | Valider en étape 2 |
-| Validateur | Validation supplémentaire nominative en étape 2 (facultatif) |
 | Exécuteur | Passer les commandes des fournisseurs qui lui sont attribués |
 | Lecteur | Consulter les commandes validées et finalisées |
 | Administrateur | Utilisateurs, services, destinations, fournisseurs, simulation |
@@ -198,7 +198,7 @@ src/
 views/                  Gabarits PHP (layout, pages, partials)
 database/               schema.sql, seed.sql
 storage/uploads/        Pièces jointes (hors web, non versionné)
-docs/                   Guide utilisateur PDF et sa source
+docs/                   Guide utilisateur PDF (servi par /tutoriel : à déployer) et sa source
 ```
 
 ## Sécurité
@@ -220,5 +220,5 @@ docs/                   Guide utilisateur PDF et sa source
 | `AADSTS65001` (consentement) | Une permission demandée n’a pas le consentement admin (souvent `GroupMember.Read.All`) |
 | « Impossible de vérifier votre accès » | Lecture des groupes refusée : ajouter et consentir `GroupMember.Read.All` |
 | E-mails non reçus | Administration › Simulation › « M’envoyer un e-mail de test » ; vérifier `Mail.Send` |
-| Commande bloquée « En attente » | Responsable ou validateur désactivé : Simulation › contrôle de la configuration |
+| Commande bloquée « En attente » | Responsable, comptable ou chef d’établissement désactivé : Simulation › contrôle de la configuration |
 | Commande validée jamais passée | Fournisseur sans exécuteur actif et aucune comptabilité : voir Fournisseurs |

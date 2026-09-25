@@ -30,7 +30,8 @@ final class DestinationRepository
 
         $build = static function (int $parentId) use (&$build, $byParent): array {
             $nodes = $byParent[$parentId] ?? [];
-            usort($nodes, static fn($a, $b) => strnatcasecmp($a['name'], $b['name']));
+            usort($nodes, static fn($a, $b) => ((int) ($a['position'] ?? 0) <=> (int) ($b['position'] ?? 0))
+                ?: strnatcasecmp($a['name'], $b['name']));
             foreach ($nodes as &$node) {
                 $node['children'] = $build((int) $node['id']);
             }
@@ -93,7 +94,67 @@ final class DestinationRepository
         if ($parentId !== null && !self::exists($parentId)) {
             return;
         }
-        $pdo->prepare('INSERT INTO destinations (parent_id, name) VALUES (?, ?)')->execute([$parentId, trim($name)]);
+        // Ajoutée en fin de liste de son parent.
+        $next = $pdo->prepare('SELECT COALESCE(MAX(position), -1) + 1 FROM destinations WHERE parent_id <=> ?');
+        $next->execute([$parentId]);
+        $pdo->prepare('INSERT INTO destinations (parent_id, name, position) VALUES (?, ?, ?)')
+            ->execute([$parentId, trim($name), (int) $next->fetchColumn()]);
+    }
+
+    /**
+     * Range $ids, dans cet ordre, sous $parentId (null = racine). Sert au glisser-déposer :
+     * un élément peut changer de parent, mais jamais entrer dans sa propre descendance.
+     *
+     * @param int[] $ids
+     */
+    public static function reorder(?int $parentId, array $ids): void
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+        if (!$ids) {
+            throw new \RuntimeException('Aucun élément à ranger.');
+        }
+        $pdo = Database::connection();
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM destinations WHERE id IN ($placeholders)");
+        $stmt->execute($ids);
+        if ((int) $stmt->fetchColumn() !== count($ids)) {
+            throw new \RuntimeException('Destination introuvable : rechargez la page.');
+        }
+        if ($parentId !== null) {
+            if (!self::exists($parentId)) {
+                throw new \RuntimeException('Emplacement introuvable : rechargez la page.');
+            }
+            if (array_intersect(array_merge([$parentId], self::ancestorIds($parentId)), $ids)) {
+                throw new \RuntimeException('Un lieu ne peut pas être rangé dans l’un de ses propres sous-lieux.');
+            }
+        }
+
+        $update = $pdo->prepare('UPDATE destinations SET parent_id = ?, position = ? WHERE id = ?');
+        $pdo->beginTransaction();
+        try {
+            foreach ($ids as $i => $id) {
+                $update->execute([$parentId, $i, $id]);
+            }
+            $pdo->commit();
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    /** @return int[] parents successifs de $id, jusqu'à la racine */
+    private static function ancestorIds(int $id): array
+    {
+        $stmt = Database::connection()->prepare('SELECT parent_id FROM destinations WHERE id = ?');
+        $ancestors = [];
+        while (true) {
+            $stmt->execute([$id]);
+            $parent = $stmt->fetchColumn();
+            if (!$parent || in_array((int) $parent, $ancestors, true)) {
+                return $ancestors;
+            }
+            $ancestors[] = $id = (int) $parent;
+        }
     }
 
     public static function rename(int $id, string $name): void

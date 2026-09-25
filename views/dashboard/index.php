@@ -65,7 +65,7 @@ if (empty($roles) && !$user['is_admin']) {
             <div class="empty">
                 <span class="empty-icon"><?= View::icon('shield', 26) ?></span>
                 <h3>Aucun rôle attribué</h3>
-                <p>Un administrateur doit vous attribuer un rôle (demandeur, validateur, exécuteur ou lecteur) pour que vous puissiez utiliser l’application.</p>
+                <p>Un administrateur doit vous attribuer un rôle (demandeur, comptabilité, chef d’établissement, exécuteur ou lecteur) pour que vous puissiez utiliser l’application.</p>
             </div>
         </section>
     <?php endif; ?>

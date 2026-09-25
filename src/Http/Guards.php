@@ -9,7 +9,7 @@ use App\Repositories\ServiceRepository;
 final class Guards
 {
     /** Pages reachable before the user has picked their service. */
-    private const ONBOARDING_EXEMPT = ['/profil/service', '/logout', '/admin/'];
+    private const ONBOARDING_EXEMPT = ['/profil/service', '/logout', '/admin/', '/tutoriel'];
 
     public static function requireLogin(): array
     {
